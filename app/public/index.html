@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Chess Vox</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="style.css">
+    
+    <link rel="stylesheet" type="text/css" href="chessground/assets/chessground.base.css" />
+    <link rel="stylesheet" type="text/css" href="chessground/assets/chessground.brown.css" />
+    <link rel="stylesheet" type="text/css" href="chessground/assets/chessground.cburnett.css" />
+</head>
+
+<!-- maybe add login option later on to connect friends and get history from database -->
+<!-- no matchmaking based on streaks or ranks due to less user pool for now  -->
+<!-- 
+    voice control always available on other half of screen
+    ask name add option to remember use cache
+    > unique id for matchmaking, name only for readability
+    > if 2 player selected ask second name maybe?
+    > placeholder text for typing name or asking for royal decree (starting voice control)
+    interface asking for battle with world kings or practice with your general
+    section 1 - world kings (pending)
+    section 2 - practice with general 
+    add option for blind game 
+-->
+
+<body>
+    <div id="themes"></div>
+    <!-- home page themes change to back -->
+    <div id="back"> 
+        <div id="resume"></div>
+        <div id="restart"></div>
+        <div id="mainMenu"></div>
+    </div>
+    <div id="settings">
+        <!-- prone to change -->
+        <div id="blind"></div>
+        <div id="tips"></div>
+        <div id="boardFlip">
+            <div id="lock"></div>   <!-- for practice mode only -->
+            <div id="flipBoard"></div>  <!-- available when board locked -->
+        </div>
+        <div id="movementSpeed"></div>
+        <div id="music"></div>
+        <div id="sfx"></div>
+        <div id="moveCallout"></div>
+    </div>
+    <section id="game">
+        <div id="meta">
+            <div id="name" class="text"></div>
+            <div id="online" class="mode text">
+                <div id="findMatch"></div>
+                <div id="challengeFriend"></div>
+            </div>
+            <div id="offline" class="mode text"></div>
+        </div>
+        <div id="main">
+            <div id="info1" class="text"></div>
+            <div id="board"></div>
+            <div id="info2" class="text"></div>
+            <div id="moves"></div>
+        </div>
+    </section>
+    <section id="listener">
+        <div id="rivalMove"></div>
+        <div id="logo"></div>
+        <div id="yourMove"></div>
+    </section>
+
+    <script type="module" src="script.js" async defer></script>
+</body>
+
+</html>
