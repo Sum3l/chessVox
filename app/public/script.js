@@ -1,10 +1,9 @@
 import { Chessground } from "/chessground/dist/chessground.min.js";
 import { Chess, SQUARES } from "/chess.js/esm/chess.js";
-// import { premove } from "/chessground/dist/premove.js";
 
 const board = document.querySelector("#board");
 const promotionMenu = document.querySelector("#promotionMenu");
-const promotionOptions = document.querySelector("#promotionMenu").childNodes;
+const promotionOptions = Array.from(promotionMenu.children);
 let moveSpace = null;
 
 const roleMap = {
@@ -26,24 +25,26 @@ const updateBoard = () => {
     });
     console.log(chess.fen());
     if (chess.isGameOver()) {
-        if (chess.isCheckmate()) {
+        if (chess.isCheckmate()) 
             // Trigger Checkmate UI (e.g., "White wins by checkmate!") 
             console.log("Checkmate!");
-        } else if (chess.isStalemate()) {
-            // // Trigger Stalemate UI (e.g., "Draw by stalemate.")
+        else if (chess.isStalemate()) 
+            // Trigger Stalemate UI (e.g., "Draw by stalemate.")
             console.log("Stalemate!");
-        } else if (chess.isThreefoldRepetition()) {
-            //  // Trigger Repetition UI 
+        else if (chess.isThreefoldRepetition())
+             // Trigger Repetition UI 
             console.log("Threefold Repetition!");
-        } else if (chess.isInsufficientMaterial()) {
-            // // Trigger Insufficient Material UI 
+        else if (chess.isInsufficientMaterial())
+            // Trigger Insufficient Material UI 
             console.log("Insufficient Material!");
-        } else if (chess.isDrawByFiftyMoves()) {
-            // // Trigger 50-move Rule Draw UI 
+        else if (chess.isDrawByFiftyMoves()) 
+            // Trigger 50-move Rule Draw UI 
             console.log("50-move Rule Draw!");
-        } // Stop the user from making more moves
-        ground.set({ movable: { color: undefined } });
-        // ground.stop();
+            // Trigger Player Resigned UI
+        else console.log("Player Resigned!");
+        // Stop the user from making more moves
+        // ground.set({ movable: { color: undefined } });
+        ground.stop();
         return;
     }
     ground.set({
@@ -120,7 +121,8 @@ const playOtherSide = (ground, chess) => {
             console.error(error);
             console.error("Move rejected. Snapping back.");
             ground.set({ fen: chess.fen() });
-            // moves are still recorded and afterPlay starts for w 
+            chess.undo();
+            // not tested
         }
     };
 }
@@ -142,12 +144,5 @@ ground.set({
     movable: { events: { after: playOtherSide(ground, chess) } }
 });
 
-// need checkmate and en-pessant (maybe other things too) pawn promotion
-// future update: add preMove
+// future update: add preMove for 1 player
 // --config premovable: { enabled: true }
-
-// check
-// -- premove
-// -- casling, en-Pessant
-// -- gameover conditions
-// -- promotion

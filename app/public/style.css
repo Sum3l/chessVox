@@ -1,7 +1,13 @@
-/* Should be a multiple of 160 to have things line up */
-#board {
+#container {
+    /* Should be a multiple of 160 to have things line up */
     width: 480px;
     height: 480px;
+    position: relative;
+}
+
+#board {
+    height: 100%;
+    width: 100%;
     box-shadow: 0 2px 2px 0 rgba(0, 0, 0, .1 4),
         0 3px 1px -2px rgba(0, 0, 0, .2),
         0 1px 5px 0 rgba(0, 0, 0, .12);
@@ -11,7 +17,6 @@
     position: absolute;
     width: 12.5%;
     height: 50%;
-    background: rgba(255, 255, 255, 0.9);
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
     z-index: 99;
     display: flex;
@@ -25,11 +30,23 @@
     width: 100%;
     height: 25%;
     cursor: pointer;
+    position: relative;
+    background-color: #f8f8ffe6;
 }
 
 #promotionMenu > div:hover {
-    border: 2% solid black;
+    border: 2px solid black;
     border-radius: 15%;
+}
+
+#promotionMenu > div:first-child {
+    border-top-left-radius: 30%;
+    border-top-right-radius: 30%;
+}
+
+#promotionMenu > div:last-child {
+    border-bottom-left-radius: 30%;
+    border-bottom-right-radius: 30%;
 }
 
 #promotionMenu > div > piece {
@@ -42,11 +59,11 @@
     pointer-events: none;
 }
 
-.hidden {
+#promotionMenu.hidden {
     display: none;
 }
 
 cg-board {
     background-color: #bfcfdd;
-    /* chessground.cburnett.css for pieces img  */
+    /* chessground/assets/chessground.cburnett.css for pieces img  */
 }
