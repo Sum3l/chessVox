@@ -3,6 +3,7 @@
         "chessground",
         "Chessground",
         "Dests",
-        "lichess"
+        "lichess",
+        "premovable"
     ]
 }
