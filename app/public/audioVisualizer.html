@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChessVox Audio Visualizer</title>
+    <style>
+        body {
+            margin: 0;
+            background-color: #161512; /* Deep slate gray/dark mode background */
+            font-family: sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Container to group button and canvas and center them */
+        .mic-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+        }
+
+        /* The Microphone Button (Top Layer) */
+        #micBtn {
+            position: absolute;
+            z-index: 1; /* Placed above the canvas */
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background-color: #1a1a1a;
+            border: 4px solid #333;
+            cursor: pointer;
+            transition: all 1s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.7);
+        }
+
+        /* Active Listening State for the Button */
+        #micBtn.listening {
+            color: #00d2ff; /* Pulsing neon blue */
+            border-color: #00d2ff;
+            box-shadow: 0 0 20px rgba(0,210,255, 0.7);
+        }
+
+        /* The Canvas (Background Layer) */
+        #waveCanvas {
+            position: absolute;
+            z-index: 5; /* Behind the button */
+            pointer-events: none; /* Clicks pass through to the button */
+            border-radius: 50%;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="mic-wrapper">
+        <canvas id="waveCanvas" width="300" height="300"></canvas>
+        
+        <button id="micBtn"> </button>
+    </div>
+
+<script>
+    // --- 1. SETUP CANVAS ---
+    const canvas = document.getElementById('waveCanvas');
+    const ctx = canvas.getContext('2d');
+    const micBtn = document.getElementById('micBtn');
+
+    // Canvas dimensions (must match CSS container width/height)
+    const CANVAS_WIDTH = 300;
+    const CANVAS_HEIGHT = 300;
+    const CENTER_X = CANVAS_WIDTH / 2;
+    const CENTER_Y = CANVAS_HEIGHT / 2;
+
+    // --- 2. CONFIGURATION & STATE ---
+    let isListening = true;
+    let timeOffset = 0; // Tracks animation progression
+    
+    // Wave properties (Base circle + Max wave variation)
+    const BASE_RADIUS = 60; // Sits slightly outside the 100px button (radius 50)
+    const MAX_AMPLITUDE = 100; // The max height of the "voice" spikes
+    const SMOOTHNESS = 120; // Number of distinct points that make up the circle
+
+    // --- 3. THE DRAWING LOOP (The Core Visualizer Math) ---
+    function drawVisualizer() {
+        // A. Clear the previous frame (essential for high-performance canvas)
+        ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+
+        if (isListening) {
+            // B. Set Styling (Matching the neon blue from the diagram)
+            ctx.lineWidth = 4;
+            ctx.strokeStyle = '#00d2ff';
+            
+            // Apply subtle neon glow
+            ctx.shadowBlur = 15;
+            ctx.shadowColor = '#00d2ff';
+
+            // C. Start drawing the path
+            ctx.beginPath();
+
+            for (let i = 0; i < SMOOTHNESS; i++) {
+                // i. Calculate current angle around the circle (in Radians: 0 to 2*PI)
+                const angle = (i / SMOOTHNESS) * Math.PI * 2;
+
+                // ========================================================
+                // ii. CALCULATE VARIANCE (This is the voice reaction math!)
+                // ========================================================
+                
+                // Currently using Math.sin simulation (organic undulation):
+                // Combine multiple frequencies to look irregular
+                const simVolume = (Math.sin(angle * 7 + timeOffset * 2) * 0.7) + 
+                                  (Math.sin(angle * 13 + timeOffset) * 0.3);
+
+                // ** FUTURE HOOK FOR REAL AUDIO **
+                // Replace simVolume with normalized live microphone data:
+                // const liveVolume = analyserNode.getNormalizedValueAtIndex(i);
+                
+                // Final Dynamic Radius
+                const radius = BASE_RADIUS + (simVolume * MAX_AMPLITUDE);
+
+                // ========================================================
+                // iii. POLAR TO CARTESIAN CONVERSION
+                // (Calculate precise x, y pixel position on the grid)
+                // ========================================================
+                const x = CENTER_X + radius * Math.cos(angle);
+                const y = CENTER_Y + radius * Math.sin(angle);
+
+                // iv. Plot the line segment
+                if (i === 0) {
+                    ctx.moveTo(x, y); // Start position
+                } else {
+                    ctx.lineTo(x, y); // Connect subsequent points
+                }
+            }
+
+            ctx.closePath(); // Connect last point back to start
+            ctx.stroke(); // Draw the glow line
+            
+            // Advance time and reset glow effects
+            timeOffset += 0.05;
+            ctx.shadowBlur = 0; 
+        }
+
+        // E. Continue the infinite animation loop at ~60fps
+        requestAnimationFrame(drawVisualizer);
+    }
+
+    // --- 4. INTERACTIVITY (Toggle State) ---
+    micBtn.addEventListener('click', () => {
+        isListening = !isListening;
+        if (isListening) {
+            micBtn.classList.add('listening'); // Activate visual styles
+            micBtn.innerText = ' '; // Optional: Change icon when listening
+        } else {
+            micBtn.classList.remove('listening');
+            micBtn.innerText = ' ';
+        }
+    });
+
+    // Start the loop
+    drawVisualizer();
+
+</script>
+</body>
+</html>

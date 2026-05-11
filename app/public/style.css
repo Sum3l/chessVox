@@ -1,7 +1,48 @@
-#container {
+:root {
+    /* --shade: hsl(208, 31%, 81%); default */
+    /* shade variable defined in script.js  */
+    /* chessground/assets/chessground.cburnett.css for pieces img  */
+    --board-size: 480px;
     /* Should be a multiple of 160 to have things line up */
-    width: 480px;
-    height: 480px;
+}
+html, body {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+body {
+    overflow: hidden;
+    background-color: hsl(from var(--shade) h s calc(l /6));
+}
+
+#back,
+#settings,
+#themes {
+    position: absolute;
+}
+
+#game,
+#listener {
+    height: 100%;
+    width: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+#game {
+    float: left;
+}
+
+#listener {
+    float: right;
+}
+
+#boardContainer {
+    width: var(--board-size);
+    height: var(--board-size);
     position: relative;
 }
 
@@ -26,7 +67,7 @@
     border-radius: 15%;
 }
 
-#promotionMenu > div {
+#promotionMenu>div {
     width: 100%;
     height: 25%;
     cursor: pointer;
@@ -34,22 +75,22 @@
     background-color: #f8f8ffe6;
 }
 
-#promotionMenu > div:hover {
+#promotionMenu>div:hover {
     border: 2px solid black;
     border-radius: 15%;
 }
 
-#promotionMenu > div:first-child {
+#promotionMenu>div:first-child {
     border-top-left-radius: 30%;
     border-top-right-radius: 30%;
 }
 
-#promotionMenu > div:last-child {
+#promotionMenu>div:last-child {
     border-bottom-left-radius: 30%;
     border-bottom-right-radius: 30%;
 }
 
-#promotionMenu > div > piece {
+#promotionMenu>div>piece {
     width: 100%;
     height: 100%;
     display: block;
@@ -64,6 +105,42 @@
 }
 
 cg-board {
-    background-color: #bfcfdd;
-    /* chessground/assets/chessground.cburnett.css for pieces img  */
+    background-color: var(--shade);
+}
+
+#mic {
+    aspect-ratio: 1/1;;
+    position: relative;
+    width: 50%;
+    height: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#micBtn {
+    z-index: 1;
+    width: calc(100% / 3 * 2);
+    height: calc(100% / 3 * 2);
+    border-radius: 50%;
+    background-color: hsl(from var(--shade) h s calc(l /8));
+    border: 4px solid #333;
+    cursor: pointer;
+    transition: all .8s ease-out;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.7);
+}
+
+#micBtn.listening {
+    border-color: hsl(from var(--shade) h s l);
+    box-shadow: 0 0 20px hsl(from var(--shade) h s l / 0.7);
+}
+
+#wave {
+    position: absolute;
+    z-index: 99;
+    pointer-events: none;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    
 }

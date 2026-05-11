@@ -1,148 +1,78 @@
-import { Chessground } from "/chessground/dist/chessground.min.js";
-import { Chess, SQUARES } from "/chess.js/esm/chess.js";
+const canvas = document.querySelector("#wave");
+const ctx = canvas.getContext("2d");
+const micBtn = document.querySelector("#micBtn");
 
-const board = document.querySelector("#board");
-const promotionMenu = document.querySelector("#promotionMenu");
-const promotionOptions = Array.from(promotionMenu.children);
-let moveSpace = null;
+document.documentElement.style.setProperty("--shade", "hsl(208, 31%, 81%)");
 
-const roleMap = {
-    'q': 'queen',
-    'r': 'rook',
-    'b': 'bishop',
-    'n': 'knight',
-    'p': 'pawn',
-    'k': 'king'
-}
+const rect = canvas.getBoundingClientRect();
+const CANVAS_WIDTH = canvas.width = rect.width;
+const CANVAS_HEIGHT = canvas.height = rect.height;
 
-const chess = new Chess();
+const CANVAS_CENTER_X = canvas.width / 2;
+const CANVAS_CENTER_Y = canvas.height / 2;
 
-const updateBoard = () => {
-    ground.set({
-        fen: chess.fen(),
-        turnColor: chess.turn() === 'w' ? 'white' : 'black',
-        check: chess.inCheck(),
-    });
-    console.log(chess.fen());
-    if (chess.isGameOver()) {
-        if (chess.isCheckmate()) 
-            // Trigger Checkmate UI (e.g., "White wins by checkmate!") 
-            console.log("Checkmate!");
-        else if (chess.isStalemate()) 
-            // Trigger Stalemate UI (e.g., "Draw by stalemate.")
-            console.log("Stalemate!");
-        else if (chess.isThreefoldRepetition())
-             // Trigger Repetition UI 
-            console.log("Threefold Repetition!");
-        else if (chess.isInsufficientMaterial())
-            // Trigger Insufficient Material UI 
-            console.log("Insufficient Material!");
-        else if (chess.isDrawByFiftyMoves()) 
-            // Trigger 50-move Rule Draw UI 
-            console.log("50-move Rule Draw!");
-            // Trigger Player Resigned UI
-        else console.log("Player Resigned!");
-        // Stop the user from making more moves
-        // ground.set({ movable: { color: undefined } });
-        ground.stop();
-        return;
+let isListening = true;
+let timeOffset = 0; // controls speed
+
+const BASE_RADIUS = micBtn.getBoundingClientRect().width / 2 - 40; // comparison to button 
+const MAX_AMPLITUDE = 5; // The max height of the "voice" spikes
+const SMOOTHNESS = 120; // Number of distinct points that make up the circle
+
+function drawVisualizer() {
+    ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+
+    ctx.lineWidth = 4;
+    // ctx.strokeStyle = '#00d2ff';
+    ctx.strokeStyle = " hsl(208, 31%, 81%)";
+
+    ctx.shadowBlur = 15;
+    // ctx.shadowColor = '#00d2ff';
+    ctx.shadowColor = "hsl(208, 31%, 81%)";
+
+
+    if (isListening) {
+
+        ctx.beginPath();
+
+        for (let i = 0; i < SMOOTHNESS; i++) {
+            const angle = (i / SMOOTHNESS) * Math.PI * 2;
+
+            // CALCULATE VARIANCE (This is the voice reaction math!)
+
+            // Currently using Math.sin simulation (organic undulation):
+            // Combine multiple frequencies to look irregular
+            const simVolume = (Math.sin(angle * 7 + timeOffset * 2) * 0.7) +
+                (Math.sin(angle * 13 + timeOffset) * 0.3);
+
+            // ** FUTURE HOOK FOR REAL AUDIO **
+            // Replace simVolume with normalized live microphone data:
+            // const liveVolume = analyserNode.getNormalizedValueAtIndex(i);
+
+            // Final Dynamic Radius
+            const radius = BASE_RADIUS + (simVolume * MAX_AMPLITUDE);
+
+            // iii. POLAR TO CARTESIAN CONVERSION
+            // (Calculate precise x, y pixel position on the grid)
+            const x = CANVAS_CENTER_X + radius * Math.cos(angle);
+            const y = CANVAS_CENTER_Y + radius * Math.sin(angle);
+
+            if (i === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+        }
+        ctx.closePath();
+        ctx.stroke();
+
+        // Advance time 
+        timeOffset += 0.05;
     }
-    ground.set({
-        movable: {
-            color: chess.turn() === 'w' ? 'white' : 'black',
-            dests: toDests(chess)
-        }
-    });
-};
 
-promotionOptions.forEach(option => {
-    option.addEventListener("click", event => {
-        const role = event.currentTarget.dataset.role;
-        promotionMenu.classList.add("hidden");
-        if (moveSpace) {
-            chess.move({
-                from: moveSpace.from,
-                to: moveSpace.to,
-                promotion: role,
-            });
-            updateBoard();
-            moveSpace = null;
-        }
-    });
-});
-
-const promoteTo = (targetSquare, turnColor) => {
-    const files = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
-    const fileIndex = files.indexOf(targetSquare[0]);
-    const left = fileIndex * 12.5;
-    const top = turnColor === 'w' ? 0 : 50;
-
-    promotionMenu.style.left = `${left}%`;
-    promotionMenu.style.top = `${top}%`;
-
-    promotionOptions.forEach(option => {
-        const role = option.dataset.role;
-        option.querySelector("piece").className = `${roleMap[role]} ${turnColor === 'w' ? 'white' : 'black'}`;
-    });
-
-    promotionMenu.classList.remove("hidden");
-};
-
-const toDests = (chess) => {
-    const dests = new Map();
-    SQUARES.forEach((square) => {
-        const moves = chess.moves({ square, verbose: true });
-        if (moves.length) {
-            dests.set(square, moves.map((move) => move.to));
-        }
-    });
-    return dests;
-};
-
-const playOtherSide = (ground, chess) => {
-    return (orig, dest) => {
-        try {
-            const moves = chess.moves({ square: orig, verbose: true });
-            const isPromotion = moves.some(move => move.to === dest && move.isPromotion());
-
-            if (isPromotion) {
-                moveSpace = { from: orig, to: dest };
-                promoteTo(dest, chess.turn());
-                return;
-            } else {
-                chess.move({
-                    from: orig,
-                    to: dest,
-                    // promotion: 'q' // Auto-promote to queen
-                });
-                updateBoard();
-            }
-        } catch (error) {
-            console.error(error);
-            console.error("Move rejected. Snapping back.");
-            ground.set({ fen: chess.fen() });
-            chess.undo();
-            // not tested
-        }
-    };
+    // infinite animation loop at ~60fps
+    requestAnimationFrame(drawVisualizer);
 }
 
-const ground = Chessground(board, {
-    movable: {
-        color: "white",
-        free: false,
-        dests: toDests(chess),
-    },
-    draggable: {
-        showGhost: true,
-    },
-    premovable: {
-        enabled: true,
-    },
-});
-ground.set({
-    movable: { events: { after: playOtherSide(ground, chess) } }
+micBtn.addEventListener('click', () => {
+    isListening = !isListening;
+    micBtn.classList.toggle('listening');
 });
 
-// future update: add preMove for 1 player
-// --config premovable: { enabled: true }
+drawVisualizer();
