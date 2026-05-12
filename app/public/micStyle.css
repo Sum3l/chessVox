@@ -1,0 +1,36 @@
+#mic {
+    aspect-ratio: 1/1;;
+    position: relative;
+    width: 50%;
+    height: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#micBtn {
+    z-index: 1;
+    width: calc(100% / 3 * 2);
+    height: calc(100% / 3 * 2);
+    border-radius: 50%;
+    background-color: hsl(from var(--shade) h s calc(l /8));
+    border: 4px solid #333;
+    cursor: pointer;
+    transition: all .8s ease-out;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.7);
+}
+
+#micBtn.listening, #micBtn:hover {
+    border-color: hsl(from var(--shade) h s l);
+    box-shadow: 0 0 20px hsl(from var(--shade) h s l / 0.7);
+}
+
+#wave {
+    position: absolute;
+    z-index: 99;
+    pointer-events: none;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    
+}

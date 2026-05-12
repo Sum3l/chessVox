@@ -11,11 +11,11 @@ const CANVAS_HEIGHT = canvas.height = rect.height;
 const CANVAS_CENTER_X = canvas.width / 2;
 const CANVAS_CENTER_Y = canvas.height / 2;
 
-let isListening = true;
+let isListening = false;
 let timeOffset = 0; // controls speed
 
 const BASE_RADIUS = micBtn.getBoundingClientRect().width / 2 - 40; // comparison to button 
-const MAX_AMPLITUDE = 5; // The max height of the "voice" spikes
+let AMPLITUDE = 1; // The height of the "voice" spikes
 const SMOOTHNESS = 120; // Number of distinct points that make up the circle
 
 function drawVisualizer() {
@@ -29,50 +29,69 @@ function drawVisualizer() {
     // ctx.shadowColor = '#00d2ff';
     ctx.shadowColor = "hsl(208, 31%, 81%)";
 
+    if (isListening) if (AMPLITUDE < 35) AMPLITUDE += 1;
+    if ((!isListening) && (AMPLITUDE > 5)) AMPLITUDE -= 1;
 
-    if (isListening) {
+    ctx.beginPath();
 
-        ctx.beginPath();
+    for (let i = 0; i < SMOOTHNESS; i++) {
+        const angle = (i / SMOOTHNESS) * Math.PI * 2;
 
-        for (let i = 0; i < SMOOTHNESS; i++) {
-            const angle = (i / SMOOTHNESS) * Math.PI * 2;
+        // CALCULATE VARIANCE (This is the voice reaction math!)
 
-            // CALCULATE VARIANCE (This is the voice reaction math!)
+        // Currently using Math.sin simulation (organic undulation):
+        // Combine multiple frequencies to look irregular
+        const simVolume = (Math.sin(angle * 7 + timeOffset * 2) * 0.7) +
+            (Math.sin(angle * 13 + timeOffset) * 0.3);
 
-            // Currently using Math.sin simulation (organic undulation):
-            // Combine multiple frequencies to look irregular
-            const simVolume = (Math.sin(angle * 7 + timeOffset * 2) * 0.7) +
-                (Math.sin(angle * 13 + timeOffset) * 0.3);
+        // ** FUTURE HOOK FOR REAL AUDIO **
+        // Replace simVolume with normalized live microphone data:
+        // const liveVolume = analyserNode.getNormalizedValueAtIndex(i);
 
-            // ** FUTURE HOOK FOR REAL AUDIO **
-            // Replace simVolume with normalized live microphone data:
-            // const liveVolume = analyserNode.getNormalizedValueAtIndex(i);
+        // Final Dynamic Radius
+        const radius = BASE_RADIUS + (simVolume * AMPLITUDE);
 
-            // Final Dynamic Radius
-            const radius = BASE_RADIUS + (simVolume * MAX_AMPLITUDE);
+        // iii. POLAR TO CARTESIAN CONVERSION
+        // (Calculate precise x, y pixel position on the grid)
+        const x = CANVAS_CENTER_X + radius * Math.cos(angle);
+        const y = CANVAS_CENTER_Y + radius * Math.sin(angle);
 
-            // iii. POLAR TO CARTESIAN CONVERSION
-            // (Calculate precise x, y pixel position on the grid)
-            const x = CANVAS_CENTER_X + radius * Math.cos(angle);
-            const y = CANVAS_CENTER_Y + radius * Math.sin(angle);
-
-            if (i === 0) ctx.moveTo(x, y);
-            else ctx.lineTo(x, y);
-        }
-        ctx.closePath();
-        ctx.stroke();
-
-        // Advance time 
-        timeOffset += 0.05;
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
     }
+    ctx.closePath();
+    ctx.stroke();
+
+    // Advance time 
+    timeOffset += 0.05;
 
     // infinite animation loop at ~60fps
     requestAnimationFrame(drawVisualizer);
 }
 
-micBtn.addEventListener('click', () => {
+micBtn.addEventListener("click", () => {
     isListening = !isListening;
-    micBtn.classList.toggle('listening');
+    micBtn.classList.toggle("listening");
+});
+
+micBtn.addEventListener("mouseenter", () => {
+    let voiceResponse1 = setInterval(() => {
+        AMPLITUDE += 1;
+        console.log("mouse enter");
+        if (AMPLITUDE >= 5)
+            clearInterval(voiceResponse1);
+    }, 100);
+});
+
+micBtn.addEventListener("mouseleave", () => {
+    if (!isListening) {
+        let voiceResponse2 = setInterval(() => {
+            AMPLITUDE -= 1;
+            console.log("mouse leave");
+            if (AMPLITUDE <= 1)
+                clearInterval(voiceResponse2);
+        }, 100);
+    }
 });
 
 drawVisualizer();
