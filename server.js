@@ -5,6 +5,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(express.static(path.join(import.meta.dirname, "app/public")));
+app.use("/assets", express.static(path.join(import.meta.dirname, "app/assets")));
 
 app.use("/chessground", express.static(path.join(import.meta.dirname, "node_modules/@lichess-org/chessground")));
 app.use("/chess.js", express.static(path.join(import.meta.dirname, "node_modules/chess.js/dist")));

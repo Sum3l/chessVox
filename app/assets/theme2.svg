@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100%" height="100%">
+  <defs>
+    <linearGradient id="globalThemeGrad" x1="10" y1="50" x2="90" y2="50" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#00D4FF" />   <stop offset="50%" stop-color="#D900FF" />  <stop offset="100%" stop-color="#FFC837" /> </linearGradient>
+
+    <filter id="neon-glow-theme" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="1" result="blur1" />
+      <feGaussianBlur in="SourceGraphic" stdDeviation="2.5" result="blur2" />
+      <feMerge>
+        <feMergeNode in="blur2" />
+        <feMergeNode in="blur1" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- <rect width="100" height="100" rx="12" fill="#0C1017" /> -->
+
+  <g filter="url(#neon-glow-theme)">
+    
+    <g fill="none" stroke="url(#globalThemeGrad)" stroke-linecap="round">
+      <path d="M 24 35 A 28 28 0 0 0 24 65" stroke-width="2.5" />
+      <path d="M 18 28 A 38 38 0 0 0 18 72" stroke-width="1.5" stroke-dasharray="4 4" />
+      <path d="M 12 20 A 48 48 0 0 0 12 80" stroke-width="1.5" />
+      
+      <path d="M 76 35 A 28 28 0 0 1 76 65" stroke-width="2.5" />
+      <path d="M 82 28 A 38 38 0 0 1 82 72" stroke-width="1.5" stroke-dasharray="4 4" />
+      <path d="M 88 20 A 48 48 0 0 1 88 80" stroke-width="1.5" />
+    </g>
+
+    <g fill="none" stroke="url(#globalThemeGrad)" stroke-width="1.5">
+      <rect x="28" y="28" width="44" height="44" rx="8" />
+      <rect x="28" y="28" width="44" height="44" rx="8" transform="rotate(45 50 50)" />
+    </g>
+
+    <g fill="url(#globalThemeGrad)">
+      <rect x="37" y="37" width="26" height="26" rx="4" fill="none" stroke="url(#globalThemeGrad)" stroke-width="2" />
+      
+      <rect x="38" y="38" width="6.5" height="6.5" rx="1" />
+      <rect x="51" y="38" width="6.5" height="6.5" rx="1" />
+      <rect x="44.5" y="44.5" width="6.5" height="6.5" rx="1" />
+      <rect x="57.5" y="44.5" width="6.5" height="6.5" rx="1" />
+      <rect x="38" y="51" width="6.5" height="6.5" rx="1" />
+      <rect x="51" y="51" width="6.5" height="6.5" rx="1" />
+      <rect x="44.5" y="57.5" width="6.5" height="6.5" rx="1" />
+      <rect x="57.5" y="57.5" width="6.5" height="6.5" rx="1" />
+    </g>
+
+    <g fill="url(#globalThemeGrad)">
+      <circle cx="28" cy="18" r="1.5" />
+      <circle cx="35" cy="12" r="1" />
+      <circle cx="18" cy="22" r="1.5" />
+      
+      <circle cx="28" cy="82" r="1" />
+      <circle cx="22" cy="78" r="1.5" />
+      
+      <circle cx="72" cy="18" r="1.5" />
+      <circle cx="82" cy="22" r="1" />
+      
+      <circle cx="72" cy="82" r="1" />
+      <circle cx="78" cy="86" r="1.5" />
+    </g>
+
+  </g>
+</svg>

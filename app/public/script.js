@@ -1,8 +1,14 @@
 const canvas = document.querySelector("#wave");
 const ctx = canvas.getContext("2d");
 const micBtn = document.querySelector("#micBtn");
+const shockwave = document.querySelector("#shockwave");
 
 document.documentElement.style.setProperty("--shade", "hsl(208, 31%, 81%)");
+
+const width = window.innerWidth;
+const height = window.innerHeight;
+document.body.style.width = width + "px";
+document.body.style.height = height + "px";
 
 const rect = canvas.getBoundingClientRect();
 const CANVAS_WIDTH = canvas.width = rect.width;
@@ -18,7 +24,7 @@ const BASE_RADIUS = micBtn.getBoundingClientRect().width / 2 - 40; // comparison
 let AMPLITUDE = 1; // The height of the "voice" spikes
 const SMOOTHNESS = 120; // Number of distinct points that make up the circle
 
-function drawVisualizer() {
+const drawVisualizer = () => {
     ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
     ctx.lineWidth = 4;
@@ -29,7 +35,7 @@ function drawVisualizer() {
     // ctx.shadowColor = '#00d2ff';
     ctx.shadowColor = "hsl(208, 31%, 81%)";
 
-    if (isListening) if (AMPLITUDE < 35) AMPLITUDE += 1;
+    if (isListening) if (AMPLITUDE < 25) AMPLITUDE += 1;
     if ((!isListening) && (AMPLITUDE > 5)) AMPLITUDE -= 1;
 
     ctx.beginPath();
@@ -93,5 +99,27 @@ micBtn.addEventListener("mouseleave", () => {
         }, 100);
     }
 });
+
+const triggerCommandShockwave = () => {
+    shockwave.classList.remove("fire");
+
+    // Force the browser to recalculate the layout (Reflow)
+    // This is a JavaScript trick required to restart a CSS animation instantly!
+    void shockwave.offsetWidth;
+
+    shockwave.classList.add("fire");
+}
+
+// 3. Right Click: Simulate a Pico Voice Command
+micBtn.addEventListener("contextmenu", (e) => {
+    e.preventDefault(); 
+
+    if (isListening) {
+        triggerCommandShockwave();
+    } else {
+        alert("Turn the mic on first!");
+    }
+});
+
 
 drawVisualizer();

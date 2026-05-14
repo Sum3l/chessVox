@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100%" height="100%">
+  <defs>
+    <filter id="neon-glow-cyan" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="1" result="blur1" />
+      <feGaussianBlur in="SourceGraphic" stdDeviation="2.5" result="blur2" />
+      <feGaussianBlur in="SourceGraphic" stdDeviation="5" result="blur3" />
+      <feMerge>
+        <feMergeNode in="blur3" />
+        <feMergeNode in="blur2" />
+        <feMergeNode in="blur1" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- <rect width="100" height="100" rx="12" fill="#12141C" /> -->
+
+  <g filter="url(#neon-glow-cyan)" fill="none" stroke="#00D4FF" stroke-linecap="round" stroke-linejoin="round">
+    
+    <path d="M 30 50 L 34 50 L 39 34 L 44 68 L 50 24 L 56 76 L 61 34 L 66 50 L 70 50" stroke-width="2" />
+
+    <circle cx="50" cy="50" r="23" stroke-width="2" />
+
+    <circle cx="50" cy="50" r="27.5" stroke-width="5" stroke-dasharray="5.8 15.8" stroke-dashoffset="2.9" />
+
+    <!-- <circle cx="50" cy="50" r="37" stroke-width="1.5" stroke-dasharray="15 43.11" stroke-dashoffset="5" /> -->
+    
+    <circle cx="50" cy="50" r="42" stroke-width="1.5" stroke-dasharray="0.1 65.87" stroke-dashoffset="15" />
+    
+    <circle cx="50" cy="50" r="42" stroke-width="1" stroke-dasharray="20 45.97" stroke-dashoffset="45" opacity="0.6" />
+    
+  </g>
+</svg>

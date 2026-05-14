@@ -1,41 +1,158 @@
 :root {
     /* --shade: hsl(208, 31%, 81%); default */
     /* shade variable defined in script.js  */
+    --glow: hsl(from var(--shade) h s l / 0.7);
     /* chessground/assets/chessground.cburnett.css for pieces img  */
-    --board-size: 480px;
-    /* Should be a multiple of 160 to have things line up */
 }
-html, body {
-    height: 100%;
-    width: 100%;
+
+html,
+body {
     margin: 0;
     padding: 0;
 }
+
 body {
     overflow: hidden;
     background-color: hsl(from var(--shade) h s calc(l /6));
+}
+
+.hidden:not(#nonExistingID#nonExistingID) {
+    display: none;
+}
+
+#background {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-image: url("assets/StockCake-Neon_Tech_Pathways-2169742-medium.jpg");
+    filter: saturate(20%) opacity(0.4);
+    z-index: -1;
 }
 
 #back,
 #settings,
 #themes {
     position: absolute;
+    isolation: isolate;
+    z-index: 9999;
+    will-change: filter;
+    /* transition: filter .2s linear; */
+}
+
+svg {
+    animation: blink 5s linear infinite;
+}
+
+/* 
+#back:hover,
+#settings:hover,
+#themes:hover {
+    filter: drop-shadow(0 0 25px var(--glow));
+} */
+
+@keyframes blink {
+    0% {
+        filter: drop-shadow(0 0 20px transparent);
+    }
+
+    50% {
+        filter: drop-shadow(0 0 20px var(--glow));
+    }
+
+    100% {
+        filter: drop-shadow(0 0 20px transparent);
+    }
+}
+
+#back,
+#settings {
+    top: 5%;
+    aspect-ratio: 1/1;
+    max-height: 10%;
+    max-width: 10%;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    cursor: pointer;
+    color: var(--shade);
+    /* changes svg fill and stroke color  */
+}
+
+#back {
+    /* background-image: url("assets/back.svg"); */
+    left: 2%;
+    transform: scale(1.5, 1);
+}
+
+#settings {
+    right: 2%;
+    transform: scale(1.5);
+    /* background-image: url("assets/settings.svg"); */
+}
+
+#themes {
+    /* background-image: url("assets/theme2.svg"); */
+    bottom: 0;
+    right: 2%;
+    aspect-ratio: 1/1;
+    max-height: 30%;
+    max-width: 30%;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: right;
+    cursor: pointer;
+}
+
+.box {
+    background-color: hsl(from var(--shade) h s calc(l /8));
+    border: 4px solid #333;
+    cursor: pointer;
+    transition: all .8s ease-out;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.7);
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    position: absolute;
+    width: max-content;
+    height: max-content;
+    padding: 10px;
+    /* z-index: 9999; */
+}
+
+.box:hover {
+    border-color: var(--shade);
+    box-shadow: 0 0 20px hsl(from var(--shade) h s l / 0.7);
 }
 
 #game,
 #listener {
+    padding-top: 10cqh;
     height: 100%;
-    width: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
+    width: 49%;
+    box-sizing: border-box;
 }
 
 #game {
     float: left;
 }
 
+#game>div {
+    height: 100%;
+    width: 100%;
+}
+
+#main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
 #listener {
     float: right;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
 }

@@ -31,28 +31,9 @@
 -->
 
 <body>
-    <div id="themes"></div>
-    <!-- home page themes change to back -->
-    <div id="back">
-        <div id="resume"></div>
-        <div id="restart"></div>
-        <div id="mainMenu"></div>
-    </div>
-    <div id="settings">
-        <!-- prone to change -->
-        <div id="blind"></div>
-        <div id="tips"></div>
-        <div id="boardFlip">
-            <div id="lock"></div> <!-- for practice mode only -->
-            <div id="flipBoard"></div> <!-- available when board locked -->
-        </div>
-        <div id="movementSpeed"></div>
-        <div id="music"></div>
-        <div id="sfx"></div>
-        <div id="moveCallout"></div>
-    </div>
+    <div id="background"></div>
     <section id="game">
-        <div id="meta">
+        <div id="meta" class="hidden">
             <div id="name" class="text"></div>
             <div id="online" class="mode text">
                 <div id="findMatch"></div>
@@ -83,17 +64,180 @@
             <div id="moves"></div>
         </div>
     </section>
+    <div id="themes">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100%" height="100%">
+            <defs>
+                <linearGradient id="globalThemeGrad" x1="10" y1="50" x2="90" y2="50" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%" stop-color="#00D4FF" />
+                    <stop offset="50%" stop-color="#D900FF" />
+                    <stop offset="100%" stop-color="#FFC837" />
+                </linearGradient>
+
+                <filter id="neon-glow-theme" x="-50%" y="-50%" width="200%" height="200%">
+                    <feGaussianBlur in="SourceGraphic" stdDeviation="1" result="blur1" />
+                    <feGaussianBlur in="SourceGraphic" stdDeviation="2.5" result="blur2" />
+                    <feMerge>
+                        <feMergeNode in="blur2" />
+                        <feMergeNode in="blur1" />
+                        <feMergeNode in="SourceGraphic" />
+                    </feMerge>
+                </filter>
+            </defs>
+
+            <g filter="url(#neon-glow-theme)">
+
+                <g fill="none" stroke="url(#globalThemeGrad)" stroke-linecap="round">
+                    <path d="M 24 35 A 28 28 0 0 0 24 65" stroke-width="2.5" />
+                    <path d="M 18 28 A 38 38 0 0 0 18 72" stroke-width="1.5" stroke-dasharray="4 4" />
+                    <path d="M 12 20 A 48 48 0 0 0 12 80" stroke-width="1.5" />
+
+                    <path d="M 76 35 A 28 28 0 0 1 76 65" stroke-width="2.5" />
+                    <path d="M 82 28 A 38 38 0 0 1 82 72" stroke-width="1.5" stroke-dasharray="4 4" />
+                    <path d="M 88 20 A 48 48 0 0 1 88 80" stroke-width="1.5" />
+                </g>
+
+                <g fill="none" stroke="url(#globalThemeGrad)" stroke-width="1.5">
+                    <rect x="28" y="28" width="44" height="44" rx="8" />
+                    <rect x="28" y="28" width="44" height="44" rx="8" transform="rotate(45 50 50)" />
+                </g>
+
+                <g fill="url(#globalThemeGrad)">
+                    <rect x="37" y="37" width="26" height="26" rx="4" fill="none" stroke="url(#globalThemeGrad)"
+                        stroke-width="2" />
+
+                    <rect x="38" y="38" width="6.5" height="6.5" rx="1" />
+                    <rect x="51" y="38" width="6.5" height="6.5" rx="1" />
+                    <rect x="44.5" y="44.5" width="6.5" height="6.5" rx="1" />
+                    <rect x="57.5" y="44.5" width="6.5" height="6.5" rx="1" />
+                    <rect x="38" y="51" width="6.5" height="6.5" rx="1" />
+                    <rect x="51" y="51" width="6.5" height="6.5" rx="1" />
+                    <rect x="44.5" y="57.5" width="6.5" height="6.5" rx="1" />
+                    <rect x="57.5" y="57.5" width="6.5" height="6.5" rx="1" />
+                </g>
+
+                <g fill="url(#globalThemeGrad)">
+                    <circle cx="28" cy="18" r="1.5" />
+                    <circle cx="35" cy="12" r="1" />
+                    <circle cx="18" cy="22" r="1.5" />
+
+                    <circle cx="28" cy="82" r="1" />
+                    <circle cx="22" cy="78" r="1.5" />
+
+                    <circle cx="72" cy="18" r="1.5" />
+                    <circle cx="82" cy="22" r="1" />
+
+                    <circle cx="72" cy="82" r="1" />
+                    <circle cx="78" cy="86" r="1.5" />
+                </g>
+
+            </g>
+        </svg>
+    </div>
+    <!-- home page themes change to back -->
+    <div id="back">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100%" height="100%">
+            <defs>
+                <filter id="neon-glow" x="-50%" y="-50%" width="200%" height="200%">
+                    <feGaussianBlur in="SourceGraphic" stdDeviation="1" result="blur1" />
+                    <feGaussianBlur in="SourceGraphic" stdDeviation="2.5" result="blur2" />
+                    <feGaussianBlur in="SourceGraphic" stdDeviation="5" result="blur3" />
+                    <feMerge>
+                        <feMergeNode in="blur3" />
+                        <feMergeNode in="blur2" />
+                        <feMergeNode in="blur1" />
+                        <feMergeNode in="SourceGraphic" />
+                    </feMerge>
+                </filter>
+            </defs>
+
+            <!-- <rect width="100" height="100" rx="12" fill="#12141C" /> -->
+
+            <g filter="url(#neon-glow)" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"
+                stroke-linejoin="round">
+
+                <path d="M 38 28 L 15 50 L 38 72 L 28 50 Z" />
+
+                <path d="M 28 50 L 38 50 L 42 32 L 47 75 L 53 18 L 59 85 L 65 25 L 70 65 L 74 42 L 78 50 L 88 50" />
+
+                <path d="M 36 20 L 46 12" />
+                <path d="M 44 26 L 54 18" />
+
+                <path d="M 36 80 L 46 88" />
+                <path d="M 44 74 L 54 82" />
+
+            </g>
+        </svg>
+        <div id="backBox" class="box">
+            <div id="resume">Resume</div>
+            <div id="restart">Restart</div>
+            <div id="mainMenu">Main Menu</div>
+        </div>
+    </div>
+
+    <!-- toast  -->
+
+    <div id="settings">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100%" height="100%">
+            <defs>
+                <filter id="neon-glow-cyan" x="-50%" y="-50%" width="200%" height="200%">
+                    <feGaussianBlur in="SourceGraphic" stdDeviation="1" result="blur1" />
+                    <feGaussianBlur in="SourceGraphic" stdDeviation="2.5" result="blur2" />
+                    <feGaussianBlur in="SourceGraphic" stdDeviation="5" result="blur3" />
+                    <feMerge>
+                        <feMergeNode in="blur3" />
+                        <feMergeNode in="blur2" />
+                        <feMergeNode in="blur1" />
+                        <feMergeNode in="SourceGraphic" />
+                    </feMerge>
+                </filter>
+            </defs>
+
+            <g filter="url(#neon-glow-cyan)" fill="none" stroke="currentColor" stroke-linecap="round"
+                stroke-linejoin="round">
+
+                <path d="M 30 50 L 34 50 L 39 34 L 44 68 L 50 24 L 56 76 L 61 34 L 66 50 L 70 50" stroke-width="2" />
+
+                <circle cx="50" cy="50" r="23" stroke-width="2" />
+
+                <circle cx="50" cy="50" r="27.5" stroke-width="5" stroke-dasharray="5.8 15.8" stroke-dashoffset="2.9" />
+
+
+                <circle cx="50" cy="50" r="42" stroke-width="1.5" stroke-dasharray="0.1 65.87" stroke-dashoffset="15" />
+
+                <circle cx="50" cy="50" r="42" stroke-width="1" stroke-dasharray="20 45.97" stroke-dashoffset="45"
+                    opacity="0.6" />
+
+            </g>
+        </svg>
+        <div id="settingsBox" class="box">
+            <!-- prone to change -->
+            <div id="hide">Hide Board</div>
+            <!-- <div id="tips"></div> -->
+            <div id="FlipBoard">
+                Flip Board
+                <div id="lock">Lock</div> <!-- for practice mode only -->
+                <div id="flip">Flip</div> <!-- available when board locked -->
+            </div>
+            <!-- <div id="movementSpeed"></div> -->
+            <div id="music">Music</div>
+            <div id="sfx">Sfx</div>
+            <div id="moveCallout">Move Callout</div>
+        </div>
+    </div>
     <section id="listener">
         <div id="rivalMove"></div>
         <div id="mic">
+
+            <div id="shockwave"></div>
+
             <div id="micBtn"></div>
             <canvas id="wave"></canvas>
         </div>
         <div id="yourMove"></div>
     </section>
 
-    <script type="module" src="script.js" async defer></script>
-    <script type="module" src="chessLogic.js"></script>
+    <script type="module" src="script.js" async></script>
+    <script type="module" src="chessLogic.js" defer></script>
 </body>
 
 </html>
