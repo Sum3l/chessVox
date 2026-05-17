@@ -16,6 +16,7 @@ const roleMap = {
 }
 
 const chess = new Chess();
+let ground = null;
 
 const updateBoard = () => {
     ground.set({
@@ -25,23 +26,23 @@ const updateBoard = () => {
     });
     console.log(chess.fen());
     if (chess.isGameOver()) {
-        if (chess.isCheckmate()) 
+        if (chess.isCheckmate())
             // Trigger Checkmate UI (e.g., "White wins by checkmate!") 
-            console.log("Checkmate!");
-        else if (chess.isStalemate()) 
+            alert("Checkmate!");
+        else if (chess.isStalemate())
             // Trigger Stalemate UI (e.g., "Draw by stalemate.")
-            console.log("Stalemate!");
+            alert("Stalemate!");
         else if (chess.isThreefoldRepetition())
-             // Trigger Repetition UI 
-            console.log("Threefold Repetition!");
+            // Trigger Repetition UI 
+            alert("Threefold Repetition!");
         else if (chess.isInsufficientMaterial())
             // Trigger Insufficient Material UI 
-            console.log("Insufficient Material!");
-        else if (chess.isDrawByFiftyMoves()) 
+            alert("Insufficient Material!");
+        else if (chess.isDrawByFiftyMoves())
             // Trigger 50-move Rule Draw UI 
-            console.log("50-move Rule Draw!");
-            // Trigger Player Resigned UI
-        else console.log("Player Resigned!");
+            alert("50-move Rule Draw!");
+        // Trigger Player Resigned UI
+        else alert("Player Resigned!");
         // Stop the user from making more moves
         // ground.set({ movable: { color: undefined } });
         ground.stop();
@@ -127,22 +128,26 @@ const playOtherSide = (ground, chess) => {
     };
 }
 
-const ground = Chessground(board, {
-    movable: {
-        color: "white",
-        free: false,
-        dests: toDests(chess),
-    },
-    draggable: {
-        showGhost: true,
-    },
-    premovable: {
-        enabled: true,
-    },
-});
-ground.set({
-    movable: { events: { after: playOtherSide(ground, chess) } }
-});
+const init2PlayerGame = () => {
+    ground = Chessground(board, {
+        movable: {
+            color: "white",
+            free: false,
+            dests: toDests(chess),
+        },
+        draggable: {
+            showGhost: true,
+        },
+        premovable: {
+            enabled: true,
+        },
+    });
+    ground.set({
+        movable: { events: { after: playOtherSide(ground, chess) } }
+    });
+}
+
+init2PlayerGame();
 
 // future update: add preMove for 1 player
 // --config premovable: { enabled: true }
