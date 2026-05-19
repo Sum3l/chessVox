@@ -1,0 +1,115 @@
+#modeSelector {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    flex-direction: column;
+    animation: wavy 4s linear infinite;
+}
+
+@keyframes wavy {
+    0% {
+        transform: translate(0);
+    }
+
+    50% {
+        transform: translate(0, -10px);
+    }
+
+    100% {
+        transform: translate(0);
+    }
+}
+
+#name {
+    position: absolute;
+    top: 5%;
+    left: calc(3% + 10vmin);
+    font-size: 7vmin;
+    color: var(--shade);
+    cursor: default;
+}
+
+.mode {
+    background-color: rgba(245, 245, 245, 0.121);
+    border-radius: 10%;
+    height: 20vmin;
+    width: 50%;
+    transition: all 0.3s linear;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 30px;
+    color: var(--shade);
+}
+
+.mode:active,
+.inMode:active {
+    filter: invert(100%);
+}
+
+#online {
+    transform: translate(0, 18vmin);
+}
+
+#online:hover {
+    border: solid var(--shade);
+    transform: scale(1.1) translate(0, 18vmin);
+}
+
+#online.active {
+    border: solid var(--shade);
+    transform: scale(1.1) translate(0, 5vmin);
+}
+
+#twoPlayers {
+    transform: translate(0, -18vmin);
+}
+
+#twoPlayers:hover {
+    border: solid var(--shade);
+    transform: scale(1.1) translate(0, -18vmin);
+}
+
+.inMode {
+    background-color: rgba(245, 245, 245, 0.121);
+    border-radius: 10%;
+    height: 18vmin;
+    width: 45%;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 30px;
+    color: var(--shade);
+}
+
+#online ~ #findMatch {
+    transform: translate(0, -10vmin) scale(0);
+}
+
+#online.active ~ #findMatch {
+    transform: translate(0);
+    transition: all 0.3s linear 0.3s;
+}
+
+#online.active ~ #findMatch:hover {
+    border: solid var(--shade);
+    transform: translate(0) scale(1.1);
+    transition: all 0.3s linear;
+}
+
+#online ~ #challengeFriend {
+    transform: translate(0, -10vmin) scale(0);
+}
+
+#online.active ~ #challengeFriend {
+    transform: translate(0, -6vmin);
+    transition: all 0.3s linear 0.6s;
+}
+
+#online.active ~ #challengeFriend:hover {
+    border: solid var(--shade);
+    transform: translate(0, -6vmin) scale(1.1);
+    transition: all 0.3s linear;
+}

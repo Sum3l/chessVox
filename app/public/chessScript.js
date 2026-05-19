@@ -128,7 +128,7 @@ const playOtherSide = (ground, chess) => {
     };
 }
 
-const init2PlayerGame = () => {
+export const init2PlayerGame = () => {
     ground = Chessground(board, {
         movable: {
             color: "white",
@@ -147,7 +147,29 @@ const init2PlayerGame = () => {
     });
 }
 
-init2PlayerGame();
+export const resetBoard = () => {
+    if (!promotionMenu.classList.contains("hidden"))
+        promotionMenu.classList.add("hidden");
+    chess.reset();
+    ground.set({
+        fen: chess.fen(),
+        turnColor: "white",
+        movable: {
+            color: "white",
+            dests: toDests(chess),
+        },
+    });
+}
+
+export const destroyBoard = () => {
+    if (!promotionMenu.classList.contains("hidden"))
+        promotionMenu.classList.add("hidden");
+    ground.destroy();
+    chess.reset();
+}
+
+
+// init2PlayerGame();
 
 // future update: add preMove for 1 player
 // --config premovable: { enabled: true }

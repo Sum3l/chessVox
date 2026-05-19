@@ -13,6 +13,7 @@
     <link rel="stylesheet" type="text/css" href="chessground/assets/chessground.cburnett.css" />
     <link rel="stylesheet" type="text/css" href="styledSlider.css" />
     <link rel="stylesheet" type="text/css" href="style.css">
+    <link rel="stylesheet" type="text/css" href="modeStyle.css">
     <link rel="stylesheet" type="text/css" href="chessStyle.css">
     <link rel="stylesheet" type="text/css" href="micStyle.css">
 </head>
@@ -29,18 +30,26 @@
     section 1 - world kings (pending)
     section 2 - practice with general 
     add option for blind game 
+
+    light for turns
+    timeout for 1 player
+    moves table
 -->
 
 <body>
     <div id="background"></div>
     <section id="game">
-        <div id="meta" class="hidden">
-            <div id="name" class="text"></div>
-            <div id="online" class="mode text">
-                <div id="findMatch"></div>
-                <div id="challengeFriend"></div>
+        <div id="name">ChessVox</div>
+        <div id="modeSelector">
+            <!-- <div id="modeSelector" class="hidden"> -->
+            <div id="online" class="mode">
+                1 Player
             </div>
-            <div id="offline" class="mode text"></div>
+            <div id="findMatch" class="inMode">Find Match</div>
+            <div id="challengeFriend" class="inMode">Challenge Friend</div>
+            <div id="twoPlayers" class="mode">
+                2 Player
+            </div>
         </div>
         <div id="main">
             <div id="info1" class="text"></div>
@@ -136,17 +145,17 @@
     </div>
     <div id="colorPicker">
         <div id="hueBox">
-                <input id="hue" type="range" min="0" max="360" value="208" class="styled-slider">
+            <input id="hue" type="range" min="0" max="360" value="208" class="styled-slider">
         </div>
         <div id="saturationBox">
-                <input id="saturation" type="range" min="0" max="100" value="31" class="styled-slider">
+            <input id="saturation" type="range" min="0" max="100" value="31" class="styled-slider">
         </div>
         <div id="lightnessBox">
-                <input id="lightness" type="range" min="0" max="100" value="81" class="styled-slider slider">
+            <input id="lightness" type="range" min="0" max="100" value="81" class="styled-slider slider">
         </div>
     </div>
     <!-- home page themes change to back -->
-    <div id="back">
+    <div id="back" class="blocked">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100%" height="100%">
             <defs>
                 <filter id="neon-glow" x="-50%" y="-50%" width="200%" height="200%">
@@ -234,7 +243,8 @@
             <!-- <div id="movementSpeed"></div> -->
             <!-- <div id="music">Music</div> -->
             <div id="sfxBox" class="settingsBoxChild">Sfx
-                <input id="sfx" type="range" min="0" max="10" value="8" class="styled-slider slider-progress settingsBoxChild">
+                <input id="sfx" type="range" min="0" max="10" value="8"
+                    class="styled-slider slider-progress settingsBoxChild">
             </div>
             <div id="moveCallout" class="on settingsBoxChild">Move Callout</div>
         </div>
@@ -251,8 +261,10 @@
         <div id="yourMove"></div>
     </section>
 
-    <script type="module" src="script.js" async></script>
-    <script type="module" src="chessLogic.js" defer></script>
+    <script type="module" src="styleScript.js"></script>
+    <script type="module" src="chessScript.js"></script>
+    <script type="module" src="modeScript.js"></script>
+    <script type="module" src="script.js"></script>
 </body>
 
 </html>

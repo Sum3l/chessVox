@@ -37,13 +37,13 @@ body {
     position: absolute;
     isolation: isolate;
     z-index: 9999;
-    will-change: filter;
     /* transition: filter .2s linear; */
 }
 
 #back>svg,
 #settings>svg,
 #themes>svg {
+    will-change: filter;
     animation: blink 5s linear infinite;
     animation-play-state: running;
     z-index: 9999;
@@ -89,6 +89,12 @@ body {
     /* background-image: url("assets/back.svg"); */
     left: 2%;
     transform: scale(1.5, 1);
+    transition: transform .2s linear;
+}
+
+#back.blocked {
+    cursor: default;
+    transform: scale(1, 1.5) rotate(-90deg);
 }
 
 #settings {
@@ -145,6 +151,10 @@ body {
 #back:hover::before,
 #settings:hover::before {
     opacity: 100%;
+}
+
+#back.blocked:hover::before {
+    opacity: 0;
 }
 
 #back.pauseHover:hover::before,
@@ -336,13 +346,6 @@ body {
 #game>div {
     height: 100%;
     width: 100%;
-}
-
-#main {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
 }
 
 #listener {
