@@ -1,11 +1,11 @@
 import { init2PlayerGame } from "./chessScript.js";
+import { backBtn } from "./styleScript.js";
 
-const onlineMode = document.querySelector("#online");
-const twoPlayersMode = document.querySelector("#twoPlayers");
+export const onlineMode = document.querySelector("#online");
+export const twoPlayersMode = document.querySelector("#twoPlayers");
 
 const modeSelector = document.querySelector("#modeSelector");
 const nameTag = document.querySelector("#name");
-const backBtn = document.querySelector("#back");
 
 onlineMode.addEventListener("click", () =>{
     onlineMode.classList.toggle("active");

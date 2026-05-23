@@ -2,10 +2,15 @@ import { resetBoard, destroyBoard } from "./chessScript.js";
 
 const canvas = document.querySelector("#wave");
 const ctx = canvas.getContext("2d");
-const micBtn = document.querySelector("#micBtn");
+export const micBtn = document.querySelector("#micBtn");
 const shockwave = document.querySelector("#shockwave");
-const backBtn = document.querySelector("#back");
-const settingsBtn = document.querySelector("#settings");
+export const backBtn = document.querySelector("#back");
+export const restart = document.querySelector("#restart");
+export const quit = document.querySelector("#mainMenu");
+export const settingsBtn = document.querySelector("#settings");
+export const moveCallout = document.querySelector("#moveCallout");
+export const themes = document.querySelector("#themes");
+const colorPicker = document.querySelector("#colorPicker");
 
 let hue = 208;
 let saturation = 31;
@@ -118,7 +123,7 @@ micBtn.addEventListener("click", () => {
 micBtn.addEventListener("mouseenter", () => {
     let voiceResponse1 = setInterval(() => {
         AMPLITUDE += 1;
-        console.log("mouse enter");
+        // console.log("mouse enter");
         if (AMPLITUDE >= 5)
             clearInterval(voiceResponse1);
     }, 100);
@@ -128,7 +133,7 @@ micBtn.addEventListener("mouseleave", () => {
     if (!isListening) {
         let voiceResponse2 = setInterval(() => {
             AMPLITUDE -= 1;
-            console.log("mouse leave");
+            // console.log("mouse leave");
             if (AMPLITUDE <= 1)
                 clearInterval(voiceResponse2);
         }, 100);
@@ -149,11 +154,8 @@ const triggerCommandShockwave = () => {
 micBtn.addEventListener("contextmenu", e => {
     e.preventDefault();
 
-    if (isListening) {
+    if (isListening)
         triggerCommandShockwave();
-    } else {
-        alert("Turn the mic on first!");
-    }
 });
 
 backBtn.addEventListener("click", e => {
@@ -202,21 +204,38 @@ settingsBtn.addEventListener("click", e => {
         }
 });
 
-document.querySelector("#themes").addEventListener("click", e => {
-    document.querySelector("#colorPicker").classList.toggle("show");
+themes.addEventListener("click", e => {
+    colorPicker.classList.toggle("show");
 });
 
-
 // only for 2 players
-document.querySelector("#restart").addEventListener("click", () => {
+restart.addEventListener("click", () => {
     resetBoard();
 });
 
-document.querySelector("#mainMenu").addEventListener("click", () => {
+quit.addEventListener("click", () => {
     destroyBoard();
     document.querySelector("#modeSelector").classList.remove("hidden");
     document.querySelector("#name").classList.remove("hidden");
-    setTimeout(() => backBtn.classList.add("blocked"), 1000);
+    setTimeout(() => backBtn.classList.add("blocked"), 1500);
 });
+
+moveCallout.addEventListener("click", () => {
+    moveCallout.classList.toggle("on");
+});
+
+document.addEventListener("click", (e) => {
+    console.log(e.target, e.currentTarget);
+    if (e.target !== settingsBtn)
+        if (settingsBtn.classList.contains("active"))
+            settingsBtn.click();
+    if (e.target !== backBtn)
+        if (backBtn.classList.contains("active"))
+            backBtn.click();
+    if (e.target !== themes)
+        if (colorPicker.classList.contains("show"))
+            themes.click();
+});
+// need to fix broken UI
 
 drawVisualizer();

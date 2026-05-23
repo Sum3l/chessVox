@@ -64,3 +64,9 @@
         border-width: 1px;
     }
 }
+
+.move {
+    font-size: 7vmin;
+    color: var(--shade);
+    cursor: default;
+}

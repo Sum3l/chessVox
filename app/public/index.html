@@ -11,11 +11,11 @@
     <link rel="stylesheet" type="text/css" href="chessground/assets/chessground.base.css" />
     <link rel="stylesheet" type="text/css" href="chessground/assets/chessground.brown.css" />
     <link rel="stylesheet" type="text/css" href="chessground/assets/chessground.cburnett.css" />
-    <link rel="stylesheet" type="text/css" href="styledSlider.css" />
-    <link rel="stylesheet" type="text/css" href="style.css">
-    <link rel="stylesheet" type="text/css" href="modeStyle.css">
-    <link rel="stylesheet" type="text/css" href="chessStyle.css">
-    <link rel="stylesheet" type="text/css" href="micStyle.css">
+    <link rel="stylesheet" type="text/css" href="style/styledSlider.css" />
+    <link rel="stylesheet" type="text/css" href="style/style.css">
+    <link rel="stylesheet" type="text/css" href="style/modeStyle.css">
+    <link rel="stylesheet" type="text/css" href="style/chessStyle.css">
+    <link rel="stylesheet" type="text/css" href="style/micStyle.css">
 </head>
 
 <!-- maybe add login option later on to connect friends and get history from database -->
@@ -30,11 +30,19 @@
     section 1 - world kings (pending)
     section 2 - practice with general 
     add option for blind game 
+    home page themes change to back 
 
     light for turns
     timeout for 1 player
     moves table
+    connect sonicBlast and wave with commands
+    confirmation menu
+
+    wave connection to voice
 -->
+    
+    <!-- toast  -->
+    <!-- click other stuff cancels earlier click -->
 
 <body>
     <div id="background"></div>
@@ -154,7 +162,6 @@
             <input id="lightness" type="range" min="0" max="100" value="81" class="styled-slider slider">
         </div>
     </div>
-    <!-- home page themes change to back -->
     <div id="back" class="blocked">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100%" height="100%">
             <defs>
@@ -194,10 +201,6 @@
             <div id="mainMenu">Main Menu</div>
         </div>
     </div>
-
-    <!-- toast  -->
-    <!-- click other stuff cancels earlier click -->
-
     <div id="settings">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100%" height="100%">
             <defs>
@@ -250,7 +253,7 @@
         </div>
     </div>
     <section id="listener">
-        <div id="rivalMove"></div>
+        <div id="rivalMove" class="move"></div>
         <div id="mic">
 
             <div id="shockwave"></div>
@@ -258,13 +261,14 @@
             <div id="micBtn"></div>
             <canvas id="wave"></canvas>
         </div>
-        <div id="yourMove"></div>
+        <div id="yourMove" class="move"></div>
     </section>
 
-    <script type="module" src="styleScript.js"></script>
-    <script type="module" src="chessScript.js"></script>
-    <script type="module" src="modeScript.js"></script>
-    <script type="module" src="script.js"></script>
+    <script type="module" src="script/styleScript.js"></script>
+    <script type="module" src="script/micScript.js"></script>
+    <script type="module" src="script/chessScript.js"></script>
+    <script type="module" src="script/modeScript.js"></script>
+    <script type="module" src="script/socketScript.js"></script>
 </body>
 
 </html>

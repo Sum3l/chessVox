@@ -15,10 +15,10 @@ const roleMap = {
     'k': 'king'
 }
 
-const chess = new Chess();
+export const chess = new Chess();
 let ground = null;
 
-const updateBoard = () => {
+export const updateBoard = () => {
     ground.set({
         fen: chess.fen(),
         turnColor: chess.turn() === 'w' ? 'white' : 'black',
@@ -72,7 +72,7 @@ promotionOptions.forEach(option => {
     });
 });
 
-const promote = (targetSquare, turnColor) => {
+export const promote = (targetSquare, turnColor) => {
     const files = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
     const fileIndex = files.indexOf(targetSquare[0]);
     const left = fileIndex * 12.5;
@@ -129,6 +129,7 @@ const playOtherSide = (ground, chess) => {
 }
 
 export const init2PlayerGame = () => {
+    chess.reset();
     ground = Chessground(board, {
         movable: {
             color: "white",

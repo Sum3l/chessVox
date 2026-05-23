@@ -5,7 +5,10 @@
         "Chessground",
         "cqmax",
         "Dests",
+        "hotword",
         "lichess",
-        "premovable"
+        "premovable",
+        "queenside",
+        "takeback"
     ]
 }
