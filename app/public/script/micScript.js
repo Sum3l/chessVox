@@ -1,5 +1,5 @@
 import { chess, updateBoard } from "./chessScript.js";
-import { backBtn, settingsBtn, themes , restart, quit, moveCallout, micBtn } from "./styleScript.js";
+import { backBtn, settingsBtn, themes , restart, quit, moveCallout, tempo, micBtn, startVisualTimer, stopVisualTimer } from "./styleScript.js";
 import { twoPlayersMode, onlineMode } from "./modeScript.js";
 
 const yourMove = document.querySelector("#yourMove");
@@ -67,8 +67,14 @@ const hotWordsMap = {
 //  the hardware echo-loop, 
 //  and the auto-disconnect server timeout.
 
-const announceMove = (text) => {
+const announceMove = (text, onFinished = null) => {
     if (!window.speechSynthesis) return;
+
+    // speech disabled 
+    if (!moveCallout.classList.contains("on")) {
+        onFinished();
+        return;
+    }
 
     // Cancels currently playing audio so it doesn't overlap
     window.speechSynthesis.cancel();
@@ -77,29 +83,34 @@ const announceMove = (text) => {
     // Attach to window so Chrome's garbage collector doesn't delete it mid-sentence
     window.currentUtterance = utterance;
 
-    utterance.onstart = () => { 
-        isSpeaking = true; 
-        console.log("Computer speaking (Mic muted)");
-    };
-    
+    // utterance.onstart = () => { 
+    //     isSpeaking = true; 
+    //     console.log("Computer speaking (Mic muted)");
+    // };
+    isSpeaking = true; 
+    console.log("Computer speaking (Mic muted)");
+
     utterance.onend = () => { 
         // delay before umMuting to gives the speech engine time to clear the echo transcript
         setTimeout(() => {
             isSpeaking = false; 
             console.log("Computer finished (Mic listening)");
+            
+            if (onFinished) onFinished();
         }, 1500);
     };
 
     utterance.onerror = (e) => {
         console.error("Audio playback error:", e);
         isSpeaking = false; 
+
+        if (onFinished) onFinished();
     };
 
     utterance.rate = 1.0; // Speed (0.1 to 10)
     utterance.pitch = 1.0; // Pitch (0 to 2)
 
-    if (moveCallout.classList.contains("on")) 
-        window.speechSynthesis.speak(utterance);
+    window.speechSynthesis.speak(utterance);
 };
 
 const parseNextWordToSAN = (word1, word2) => {
@@ -238,8 +249,15 @@ class MicController {
 
         this.recognition.onresult = (event) => {
             const result = event.results[event.results.length - 1];
-            if (!result.isFinal) return; // Ignore partial guesses
             const transcript = result[0].transcript.trim().toLowerCase();
+
+            // if (!result.isFinal) return; // Ignore partial guesses
+            const isFinal = result.isFinal;
+            if (!isFinal) {
+                onTextRecognized(transcript, isFinal);
+                return;
+            }
+
             this.debouncedProcess(transcript);
         };
         this.recognition.onerror = (event) => {
@@ -293,38 +311,45 @@ const executePendingAction = () => {
 };
 
 const initializeVoiceControl = () => {
-    const handleTranscript = (transcript) => {
-        if (isSpeaking) return;
-
+    const handleTranscript = (transcript, isFinal = true) => {
         const lowerTranscript = transcript.toLowerCase();
-        console.log("User said:", lowerTranscript);
+        // console.log("User said:", lowerTranscript);
+        if (isFinal) 
+            console.log("(Final):", lowerTranscript);
 
         // confirmation response 
         if (pendingAction !== null) {
-            const yesWords = ['yes', 'go', 'confirm', 'move', 'do it', 'yep', 'correct', 'ok', 'okay' ];
-            const noWords = ['no', 'reject', 'cancel', 'delete', 'stop', 'nope', 'wrong'];
-
-            if (yesWords.some(w => lowerTranscript.includes(w))) {
-                clearTimeout(actionTimer);
-                executePendingAction();
-                return;
-            } 
+            // \b ensures we match exact words "not" doesn't trigger "no"
+            const isYes = /\b(yes|go|confirm|move|do it|yep|correct)\b/.test(lowerTranscript);
+            const isNo = /\b(no|reject|cancel|delete|stop|nope|wrong)\b/.test(lowerTranscript);
             
-            if (noWords.some(w => lowerTranscript.includes(w))) {
+            if (isNo) {
+                window.speechSynthesis.cancel();
                 clearTimeout(actionTimer);
+                stopVisualTimer();
 
                 console.log("Action rejected");
                 yourMove.textContent = "Cancelled.";
-                announceMove("Aborted."); // Safe vocabulary
-                setTimeout(() => yourMove.textContent = "", 500);
+                setTimeout(() => yourMove.textContent = "", 1500);
                 
                 pendingAction = null; 
+                isSpeaking = false;
                 return;
             }
-            
-            // announceMove("Proceed?"); // Safe vocabulary
+
+            if (isYes) {
+                window.speechSynthesis.cancel();
+                clearTimeout(actionTimer);
+                stopVisualTimer();
+
+                isSpeaking = false;
+                executePendingAction();
+                return;
+            }
             return; 
         }
+        if (isSpeaking) return;
+        if (!isFinal) return;
 
         // Intercept HotWords 
         for (const [word, action] of Object.entries(hotWordsMap)) 
@@ -336,23 +361,30 @@ const initializeVoiceControl = () => {
                 if (isFunction || isDomElement) {
                     let prompt = "";
                     if (word.includes("call out")) prompt = "move callout?";
-                    else prompt = word.includes("player") ? `Start ${word} game?` : `${word}?`;
+                    else prompt = word.includes("player") ? `Start ${word} game?` : `Execute ${word}?`;
                     yourMove.textContent = prompt;
-                    announceMove(prompt);
                     pendingAction = { type: 'hotword', data: action };
 
-                    clearTimeout(actionTimer);
-                    actionTimer = setTimeout(executePendingAction, 3000);
+                    announceMove(prompt, () => {
+                        if (pendingAction !== null) {
+                            clearTimeout(actionTimer);
+
+                            startVisualTimer(tempo);
+                            actionTimer = setTimeout(executePendingAction, tempo);     
+                        } 
+                    });
                 }
                 return; 
             }
-
         const sanMove = parseTranscriptToSAN(lowerTranscript);
 
         if (!sanMove) {
+            const strippedForGhost = lowerTranscript.replace(/[.,!?]/g, '').trim();
+            if (/^(yes|go|confirm|move|do it|yep|correct|no|reject|cancel|delete|stop|nope|wrong)$/.test(strippedForGhost)) 
+                return; // Silently ignore the ghost input
+            
             yourMove.textContent = "Didn't catch that.";
-            announceMove("Didn't catch that.");
-            setTimeout(() => yourMove.textContent = "", 500);
+            setTimeout(() => yourMove.textContent = "", 1500);
             return;
         }
 
@@ -373,15 +405,19 @@ const initializeVoiceControl = () => {
                 if (moveResult.flags.includes('p')) spokenText = `Pawn promotes to ${pieceNames[moveResult.promotion]}?`;
 
                 yourMove.textContent = spokenText;
-                announceMove(spokenText);
                 pendingAction = { type: 'move', data: sanMove };
 
-                clearTimeout(actionTimer);
-                actionTimer = setTimeout(() => {
-                    console.log("move auto play");
-                    executePendingAction();
-                }, 3000);
+                announceMove(spokenText, () => {
+                    if (pendingAction !== null) {
+                        clearTimeout(actionTimer);
 
+                        startVisualTimer(tempo);
+                        actionTimer = setTimeout(() => {
+                            console.log("move autoplay");
+                            executePendingAction();
+                        }, tempo);
+                    }
+                });
             }
         } catch (error) {
             console.log("Illegal move format ignored.");

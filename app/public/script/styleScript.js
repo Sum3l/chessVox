@@ -12,6 +12,7 @@ export const moveCallout = document.querySelector("#moveCallout");
 export const themes = document.querySelector("#themes");
 const colorPicker = document.querySelector("#colorPicker");
 
+export let tempo = 4000;
 let hue = 208;
 let saturation = 31;
 let lightness = 81;
@@ -26,10 +27,13 @@ for (let e of document.querySelectorAll('input[type="range"].styled-slider')) {
         e.style.setProperty('--value', e.value);
         e.style.setProperty('--min', e.min == '' ? '0' : e.min);
         e.style.setProperty('--max', e.max == '' ? '100' : e.max);
-        e.addEventListener('input', () => { e.style.setProperty('--value', e.value) });
+        e.addEventListener('input', () => {
+            e.style.setProperty('--value', e.value)
+            tempo = e.value * 1000;
+        });
     }
     if (e.id === "hue")
-        e.addEventListener('input', (event) => {
+        e.addEventListener('input', () => {
             hue = e.value;
             changeShade();
         });
@@ -60,12 +64,55 @@ const CANVAS_CENTER_Y = canvas.height / 2;
 let isListening = false;
 let timeOffset = 0; // controls speed
 
+let isTimerRunning = false;
+let timerStartTime = 0;
+let timerDuration = 3000;
+
+export const startVisualTimer = (ms) => {
+    isTimerRunning = true;
+    timerDuration = ms;
+    timerStartTime = performance.now(); // browser timestamp
+};
+
+export const stopVisualTimer = () => {
+    isTimerRunning = false;
+};
+
 const BASE_RADIUS = micBtn.getBoundingClientRect().width / 2 - 40; // comparison to button 
 let AMPLITUDE = 1; // The height of the "voice" spikes
 const SMOOTHNESS = 120; // Number of distinct points that make up the circle
 
 const drawVisualizer = () => {
     ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+
+    if (isTimerRunning) {
+        const elapsed = performance.now() - timerStartTime;
+        let progress = 1 - (elapsed / timerDuration);
+
+        if (progress <= 0) {
+            progress = 0;
+            isTimerRunning = false;
+        }
+
+        if (progress > 0) {
+            ctx.save(); 
+            ctx.beginPath();
+
+            const timerRadius = BASE_RADIUS + 70; 
+
+            const startAngle = -Math.PI / 2;
+            const endAngle = startAngle + (Math.PI * 2 * progress);
+
+            ctx.arc(CANVAS_CENTER_X, CANVAS_CENTER_Y, timerRadius, startAngle, endAngle, false);
+
+            ctx.lineWidth = 6;
+            ctx.lineCap = "round"; 
+            ctx.strokeStyle = `hsl(${hue}, ${saturation}%, ${lightness}%)`; 
+            
+            ctx.stroke();
+            ctx.restore(); 
+        }
+    }
 
     ctx.lineWidth = 4;
     // ctx.strokeStyle = '#00d2ff';
@@ -75,7 +122,7 @@ const drawVisualizer = () => {
     // ctx.shadowColor = '#00d2ff';
     ctx.shadowColor = `hsl(${hue}, ${saturation}%, ${lightness}%)`;
 
-    if (isListening) if (AMPLITUDE < 25) AMPLITUDE += 1;
+    if (isListening) if (AMPLITUDE < 20) AMPLITUDE += 1;
     if ((!isListening) && (AMPLITUDE > 5)) AMPLITUDE -= 1;
 
     ctx.beginPath();
@@ -225,17 +272,20 @@ moveCallout.addEventListener("click", () => {
 });
 
 document.addEventListener("click", (e) => {
-    console.log(e.target, e.currentTarget);
-    if (e.target !== settingsBtn)
-        if (settingsBtn.classList.contains("active"))
-            settingsBtn.click();
-    if (e.target !== backBtn)
-        if (backBtn.classList.contains("active"))
-            backBtn.click();
-    if (e.target !== themes)
-        if (colorPicker.classList.contains("show"))
-            themes.click();
+    // Ignore fake JavaScript clicks to prevent chain reactions
+    if (!e.isTrusted) return;
+
+    if (!settingsBtn.contains(e.target) && settingsBtn.classList.contains("active")) {
+        settingsBtn.click();
+    }
+
+    if (!backBtn.contains(e.target) && backBtn.classList.contains("active")) {
+        backBtn.click();
+    }
+
+    if (!themes.contains(e.target) && !colorPicker.contains(e.target) && colorPicker.classList.contains("show")) {
+        themes.click();
+    }
 });
-// need to fix broken UI
 
 drawVisualizer();
