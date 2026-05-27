@@ -1,5 +1,7 @@
 {
     "cSpell.words": [
+        "chessvox",
+        "bitjson",
         "cburnett",
         "chessground",
         "Chessground",
@@ -8,6 +10,7 @@
         "hotword",
         "lichess",
         "premovable",
+        "qrcode",
         "queenside",
         "takeback"
     ]

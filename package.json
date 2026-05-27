@@ -12,6 +12,7 @@
   "author": "sumel",
   "license": "ISC",
   "dependencies": {
+    "@bitjson/qr-code": "^1.0.2",
     "@lichess-org/chessground": "^10.1.1",
     "chess.js": "^1.4.0",
     "express": "^5.2.1",

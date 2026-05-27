@@ -4,7 +4,7 @@ import { backBtn } from "./styleScript.js";
 export const onlineMode = document.querySelector("#online");
 export const twoPlayersMode = document.querySelector("#twoPlayers");
 
-const modeSelector = document.querySelector("#modeSelector");
+export const modeSelector = document.querySelector("#modeSelector");
 const nameTag = document.querySelector("#name");
 
 onlineMode.addEventListener("click", () =>{

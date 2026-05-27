@@ -84,32 +84,120 @@
     color: var(--shade);
 }
 
-#online ~ #findMatch {
+#online~#findMatch {
     transform: translate(0, -10vmin) scale(0);
 }
 
-#online.active ~ #findMatch {
+#online.active~#findMatch {
     transform: translate(0);
     transition: all 0.3s linear 0.3s;
 }
 
-#online.active ~ #findMatch:hover {
+#online.active~#findMatch:hover {
     border: solid var(--shade);
     transform: translate(0) scale(1.1);
     transition: all 0.3s linear;
 }
 
-#online ~ #challengeFriend {
+#online~#challengeFriend {
     transform: translate(0, -10vmin) scale(0);
 }
 
-#online.active ~ #challengeFriend {
+#online.active~#challengeFriend {
     transform: translate(0, -6vmin);
     transition: all 0.3s linear 0.6s;
 }
 
-#online.active ~ #challengeFriend:hover {
+#online.active~#challengeFriend:hover {
     border: solid var(--shade);
     transform: translate(0, -6vmin) scale(1.1);
     transition: all 0.3s linear;
+}
+
+#waitingRoom {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    flex-direction: column;
+}
+
+#waitingRoom:not(.hidden) ~ div {
+    display: none;
+}
+
+#waitingRoom.inactive ~ div {
+    display: none;
+}
+
+#waitConnection {
+    font-size: 10vmin;
+    color: var(--shade);
+    cursor: default;
+    margin-top: -20vmin;
+}
+
+#waitConnection::after {
+    content: ".";
+    animation: loading 3s linear infinite;
+}
+
+@keyframes loading {
+    0% {
+        content: ".";
+    }
+    33% {
+        content: "..";
+    }
+    66% {
+        content: "...";
+    }
+    100% {
+        content: ".";
+    }
+}
+
+#waitFriend {
+    margin-top: -20vmin;
+}
+
+#link {
+    width: 40vmax;
+    font-size: 1.5em;
+    cursor: copy;
+}
+
+#link::after {
+    content:"";
+}
+
+.qrClass {
+    width: 35%;
+    height: 100%;
+    margin: 0.5em auto;
+    background: linear-gradient(-45deg, rgba(0, 146, 73, 0.6), rgba(34, 0, 60, 0.6));
+    border-radius: 10%;
+}
+
+#cancel {
+    background-color: rgba(245, 245, 245, 0.121);
+    border-radius: 10%;
+    height: 18vmin;
+    width: 23vmax;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 30px;
+    color: var(--shade);
+    position: absolute;
+    bottom: 10%;
+}
+
+#cancel:hover {
+    border: solid var(--shade);
+    transform: scale(1.1);
+}
+
+#cancel:active {    
+    filter: invert(100%);
 }

@@ -13,9 +13,10 @@ export const themes = document.querySelector("#themes");
 const colorPicker = document.querySelector("#colorPicker");
 
 export let tempo = 4000;
-let hue = 208;
-let saturation = 31;
-let lightness = 81;
+
+export let hue = 208;
+export let saturation = 31;
+export let lightness = 81;
 const changeShade = () => {
     document.documentElement.style.setProperty("--shade", `hsl(${hue}, ${saturation}%, ${lightness}%)`);
 };

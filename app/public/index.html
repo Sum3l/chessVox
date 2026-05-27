@@ -1,21 +1,21 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
 
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <title>Chess Vox</title>
-    <meta name="description" content>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <link rel="stylesheet" type="text/css" href="chessground/assets/chessground.base.css" />
     <link rel="stylesheet" type="text/css" href="chessground/assets/chessground.brown.css" />
     <link rel="stylesheet" type="text/css" href="chessground/assets/chessground.cburnett.css" />
     <link rel="stylesheet" type="text/css" href="style/styledSlider.css" />
-    <link rel="stylesheet" type="text/css" href="style/style.css">
-    <link rel="stylesheet" type="text/css" href="style/modeStyle.css">
-    <link rel="stylesheet" type="text/css" href="style/chessStyle.css">
-    <link rel="stylesheet" type="text/css" href="style/micStyle.css">
+    <link rel="stylesheet" type="text/css" href="style/style.css" />
+    <link rel="stylesheet" type="text/css" href="style/modeStyle.css" />
+    <link rel="stylesheet" type="text/css" href="style/chessStyle.css" />
+    <link rel="stylesheet" type="text/css" href="style/micStyle.css" />
 </head>
 
 <!-- maybe add login option later on to connect friends and get history from database -->
@@ -40,24 +40,37 @@
 
     wave connection to voice
 -->
-    
-    <!-- toast  -->
-    <!-- click other stuff cancels earlier click -->
-    <!-- save stated of var to cache  -->
+
+<!-- handle game end  -->
+
+<!-- toast  -->
+<!-- click other stuff cancels earlier click -->
+<!-- save stated of var to cache  -->
+
 <body>
     <div id="background"></div>
     <section id="game">
         <div id="name">ChessVox</div>
         <div id="modeSelector">
             <!-- <div id="modeSelector" class="hidden"> -->
-            <div id="online" class="mode">
-                1 Player
+            <div id="waitingRoom" class="hidden">
+                <div id="waitFriend" class="hidden">
+                    <div id="qrCode"></div>
+                    <input type="text" id="link" readonly onclick="this.select()">
+                    <!-- <div id="link"></div> -->
+                </div>
+                <div id="waitConnection" class="hidden">connecting</div>
+                <div id="cancel">cancel</div>
             </div>
+            <div id="online" class="mode">1 Player</div>
             <div id="findMatch" class="inMode">Find Match</div>
-            <div id="challengeFriend" class="inMode">Challenge Friend</div>
-            <div id="twoPlayers" class="mode">
-                2 Player
-            </div>
+            <div id="challengeFriend" class="inMode">create Game</div>
+            <div id="twoPlayers" class="mode">2 Player</div>
+            <!-- <qr-code id="qr" class="qrClass" contents="https://example.com/"
+                module-color="#1c7d43" position-ring-color="#13532d"
+                position-center-color="#70c559" mask-x-to-y-ratio="1.2" >
+                <img src="../assets/backLogo.svg" slot="icon" />
+            </qr-code> -->
         </div>
         <div id="main">
             <div id="info1" class="text"></div>
@@ -103,7 +116,6 @@
             </defs>
 
             <g filter="url(#neon-glow-theme)">
-
                 <g fill="none" stroke="url(#globalThemeGrad)" stroke-linecap="round">
                     <path d="M 24 35 A 28 28 0 0 0 24 65" stroke-width="2.5" />
                     <path d="M 18 28 A 38 38 0 0 0 18 72" stroke-width="1.5" stroke-dasharray="4 4" />
@@ -147,19 +159,18 @@
                     <circle cx="72" cy="82" r="1" />
                     <circle cx="78" cy="86" r="1.5" />
                 </g>
-
             </g>
         </svg>
     </div>
     <div id="colorPicker">
         <div id="hueBox">
-            <input id="hue" type="range" min="0" max="360" value="208" class="styled-slider">
+            <input id="hue" type="range" min="0" max="360" value="208" class="styled-slider" />
         </div>
         <div id="saturationBox">
-            <input id="saturation" type="range" min="0" max="100" value="31" class="styled-slider">
+            <input id="saturation" type="range" min="0" max="100" value="31" class="styled-slider" />
         </div>
         <div id="lightnessBox">
-            <input id="lightness" type="range" min="0" max="100" value="81" class="styled-slider slider">
+            <input id="lightness" type="range" min="0" max="100" value="81" class="styled-slider slider" />
         </div>
     </div>
     <div id="back" class="blocked">
@@ -182,7 +193,6 @@
 
             <g filter="url(#neon-glow)" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"
                 stroke-linejoin="round">
-
                 <path d="M 38 28 L 15 50 L 38 72 L 28 50 Z" />
 
                 <path d="M 28 50 L 38 50 L 42 32 L 47 75 L 53 18 L 59 85 L 65 25 L 70 65 L 74 42 L 78 50 L 88 50" />
@@ -192,7 +202,6 @@
 
                 <path d="M 36 80 L 46 88" />
                 <path d="M 44 74 L 54 82" />
-
             </g>
         </svg>
         <div id="backBox" class="box">
@@ -219,19 +228,16 @@
 
             <g filter="url(#neon-glow-cyan)" fill="none" stroke="currentColor" stroke-linecap="round"
                 stroke-linejoin="round">
-
                 <path d="M 30 50 L 34 50 L 39 34 L 44 68 L 50 24 L 56 76 L 61 34 L 66 50 L 70 50" stroke-width="2" />
 
                 <circle cx="50" cy="50" r="23" stroke-width="2" />
 
                 <circle cx="50" cy="50" r="27.5" stroke-width="5" stroke-dasharray="5.8 15.8" stroke-dashoffset="2.9" />
 
-
                 <circle cx="50" cy="50" r="42" stroke-width="1.5" stroke-dasharray="0.1 65.87" stroke-dashoffset="15" />
 
                 <circle cx="50" cy="50" r="42" stroke-width="1" stroke-dasharray="20 45.97" stroke-dashoffset="45"
                     opacity="0.6" />
-
             </g>
         </svg>
         <div id="settingsBox" class="box">
@@ -246,10 +252,11 @@
             <!-- <div id="movementSpeed"></div> -->
             <!-- <div id="music">Music</div> -->
 
-            <div id="sfxBox" class="settingsBoxChild">Tempo
-            <!-- sfx changed to game speed (tempo) -->
+            <div id="sfxBox" class="settingsBoxChild">
+                Tempo
+                <!-- sfx changed to game speed (tempo) -->
                 <input id="sfx" type="range" min="0" max="10" value="4"
-                    class="styled-slider slider-progress settingsBoxChild">
+                    class="styled-slider slider-progress settingsBoxChild" />
             </div>
             <div id="moveCallout" class="on settingsBoxChild">Move Callout</div>
         </div>
@@ -257,7 +264,6 @@
     <section id="listener">
         <div id="rivalMove" class="move"></div>
         <div id="mic">
-
             <div id="shockwave"></div>
 
             <div id="micBtn"></div>
@@ -271,6 +277,8 @@
     <script type="module" src="script/chessScript.js"></script>
     <script type="module" src="script/modeScript.js"></script>
     <script type="module" src="script/socketScript.js"></script>
+    <script type="module" src="script/qrScript.js"></script>
+
 </body>
 
 </html>
