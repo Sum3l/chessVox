@@ -139,6 +139,55 @@ io.on('connection', (socket) => {
         //     });
     });
 
+    socket.on('moveMade', ({ roomId, move }) => {
+        const game = activeGames.get(roomId);
+        console.log("moveMade");
+        if (!game)
+            return socket.emit('game_error', 'Game not found.');
+
+        let currentTurnColor = game.chess.turn();
+        // verify player move
+        if (currentTurnColor === 'w' && playerId !== game.white.id)
+            return socket.emit('game_error', 'It is White\'s turn. You are not White!');
+        if (currentTurnColor === 'b' && playerId !== game.black.id)
+            return socket.emit('game_error', 'It is Black\'s turn. You are not Black!');
+
+        try {
+            const moveData = game.chess.move(move);
+            currentTurnColor = game.chess.turn();
+            console.log("moveReceived");
+            io.to(roomId).emit('moveReceived', {
+                san: moveData.san,
+                turn: (currentTurnColor === 'w' ? 'white' : 'black')
+            });
+
+            if (game.chess.isGameOver()) {
+                // let reason = 'Game Over';
+                // if (chess.isCheckmate()) reason = 'Checkmate!';
+                // if (chess.isDraw()) reason = 'Draw!';
+
+                // io.to(roomId).emit('gameOver', { reason });
+                activeGames.delete(roomId);
+            }
+        } catch (error) {
+            socket.emit('gameError', 'Error processing move.', error);
+        }
+    });
+
+    socket.on('resigned', () => {
+        for (const [roomId, game] of activeGames.entries()) {
+            const whiteId = game.white?.id;
+            const blackId = game.black?.id;
+
+            if (whiteId === playerId || blackId === playerId) {
+                io.to(roomId).emit('playerResigned');
+                activeGames.delete(roomId);
+                break; 
+            }
+        }
+
+    });
+
     socket.on('disconnect', () => {
         waitingPlayers = waitingPlayers.filter(p => p.id !== playerId);
         console.log(`Player disconnected: ${playerId}`);

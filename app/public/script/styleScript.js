@@ -96,10 +96,10 @@ const drawVisualizer = () => {
         }
 
         if (progress > 0) {
-            ctx.save(); 
+            ctx.save();
             ctx.beginPath();
 
-            const timerRadius = BASE_RADIUS + 70; 
+            const timerRadius = BASE_RADIUS + 70;
 
             const startAngle = -Math.PI / 2;
             const endAngle = startAngle + (Math.PI * 2 * progress);
@@ -107,11 +107,11 @@ const drawVisualizer = () => {
             ctx.arc(CANVAS_CENTER_X, CANVAS_CENTER_Y, timerRadius, startAngle, endAngle, false);
 
             ctx.lineWidth = 6;
-            ctx.lineCap = "round"; 
-            ctx.strokeStyle = `hsl(${hue}, ${saturation}%, ${lightness}%)`; 
-            
+            ctx.lineCap = "round";
+            ctx.strokeStyle = `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+
             ctx.stroke();
-            ctx.restore(); 
+            ctx.restore();
         }
     }
 
@@ -256,16 +256,19 @@ themes.addEventListener("click", e => {
     colorPicker.classList.toggle("show");
 });
 
-// only for 2 players
-restart.addEventListener("click", () => {
-    resetBoard();
+quit.addEventListener("click", () => {
+    if (!backBtn.classList.contains("blocked")) {
+        destroyBoard();
+        document.querySelector("#modeSelector").classList.remove("hidden");
+        document.querySelector("#name").classList.remove("hidden");
+        setTimeout(() => backBtn.classList.add("blocked"), 1500);
+    }
 });
 
-quit.addEventListener("click", () => {
-    destroyBoard();
-    document.querySelector("#modeSelector").classList.remove("hidden");
-    document.querySelector("#name").classList.remove("hidden");
-    setTimeout(() => backBtn.classList.add("blocked"), 1500);
+restart.addEventListener("click", () => {
+    if (!backBtn.classList.contains("blocked")) 
+        if (!document.querySelector("#online").classList.contains("active")) 
+            resetBoard();
 });
 
 moveCallout.addEventListener("click", () => {

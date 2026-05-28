@@ -16,7 +16,7 @@ const roleMap = {
 }
 
 export const chess = new Chess();
-let ground = null;
+export let ground = null;
 
 export const updateBoard = () => {
     ground.set({
@@ -89,7 +89,7 @@ export const promote = (targetSquare, turnColor) => {
     promotionMenu.classList.remove("hidden");
 };
 
-const toDests = (chess) => {
+export const toDests = (chess) => {
     const dests = new Map();
     SQUARES.forEach((square) => {
         const moves = chess.moves({ square, verbose: true });
@@ -100,7 +100,7 @@ const toDests = (chess) => {
     return dests;
 };
 
-const playOtherSide = (ground, chess) => {
+export const playOtherSide = (ground, chess) => {
     return (orig, dest) => {
         try {
             const moves = chess.moves({ square: orig, verbose: true });
@@ -128,26 +128,6 @@ const playOtherSide = (ground, chess) => {
     };
 }
 
-export const init2PlayerGame = () => {
-    chess.reset();
-    ground = Chessground(board, {
-        movable: {
-            color: "white",
-            free: false,
-            dests: toDests(chess),
-        },
-        draggable: {
-            showGhost: true,
-        },
-        premovable: {
-            enabled: true,
-        },
-    });
-    ground.set({
-        movable: { events: { after: playOtherSide(ground, chess) } }
-    });
-}
-
 export const resetBoard = () => {
     if (!promotionMenu.classList.contains("hidden"))
         promotionMenu.classList.add("hidden");
@@ -169,6 +149,40 @@ export const destroyBoard = () => {
     chess.reset();
 }
 
+export const init2PlayerGame = () => {
+    chess.reset();
+    ground = Chessground(board, {
+        movable: {
+            color: "white",
+            free: false,
+            dests: toDests(chess),
+        },
+        draggable: {
+            showGhost: true,
+        },
+    });
+    ground.set({
+        movable: { events: { after: playOtherSide(ground, chess) } }
+    });
+}
+
+export const init1PlayerGame = (color) => {
+    chess.reset();
+    ground = Chessground(board, {
+        orientation: color,
+        movable: {
+            color: color,
+            free: false,
+            dests: toDests(chess),
+        },
+        draggable: {
+            showGhost: true,
+        },
+        premovable: {
+            enabled: true,
+        },
+    });
+};
 
 // init2PlayerGame();
 

@@ -1,13 +1,8 @@
 import { io } from "/socket.io/socket.io.esm.min.js";
-import { qrCode, link, waitFriend, waitConnection, waiting, endWaiting } from "./qrScript.js";
-import { backBtn } from "./styleScript.js";
-import { createQRCode } from "./qrScript.js";
-
-// remove blocked from back when direct load 
-
-// need to create better qr 
-// copy text and link doesn't work
-
+import { init1PlayerGame, updateBoard, destroyBoard, playOtherSide, toDests, ground, chess } from "./chessScript.js";
+import { backBtn, restart, quit } from "./styleScript.js";
+import { qrCode, link, waitFriend, waitConnection, waiting, endWaiting, createQRCode } from "./qrScript.js";
+import { onlineMode, twoPlayersMode, modeSelector, nameTag, beforeBoardInit } from "./modeScript.js";
 
 const getPlayerId = () => {
     let id = localStorage.getItem('chess_player_id');
@@ -36,7 +31,7 @@ const initSocket = () => {
 
         if (waitFriend.classList.contains("hidden"))
             endWaiting("connection", false);
-        if (waitConnection.classList.contains("hidden")) {
+        else if (waitConnection.classList.contains("hidden")) {
             // fade out 
             qrCode.firstChild.animateQRCode((targets, _x, _y, _count, entity) => ({
                 targets,
@@ -50,8 +45,52 @@ const initSocket = () => {
             }));
             setTimeout(() => endWaiting("friend", false), 800);
         }
+        beforeBoardInit();
+        init1PlayerGame(gameData.color);
+        ground.set({
+            movable: {
+                events: {
+                    after: (req, res) => {
+                        const helper = playOtherSide(ground, chess);
+                        helper(req, res);
+                        console.log("moveMade");
+                        socket.emit("moveMade", {
+                            roomId: gameData.id,
+                            move: chess.history({ verbose: true })[chess.history().length - 1].san,
+                        });
+                    }
+                }
+            }
+        });
+        // console.log(`game configuration ${gameData}`);
+    });
 
-        console.log(`game configuration ${gameData}`);
+    socket.on("moveReceived", ({ san, turn }) => {
+        console.log("moveReceived");
+        if (turn === ground.state.orientation) {
+            chess.move(san);
+            updateBoard();
+            ground.set({
+                movable: {
+                    color: turn,
+                    dests: toDests(chess),
+                }
+            });
+        } else {
+            ground.set({
+                movable: {
+                    color: null,
+                    dests: toDests(chess),
+                }
+            });
+        }
+        console.log("Move played!", san);
+    })
+
+    socket.on("playerResigned", () => {
+        ground.stop();
+        // Trigger Player Resigned UI
+        alert("Player Resigned!"); 
     });
 
     socket.on("gameError", (errorMessage) => {
@@ -106,4 +145,30 @@ cancel.addEventListener("click", () => {
         setTimeout(() => endWaiting("friend"), 800);
     }
     socket.disconnect();
+});
+
+restart.addEventListener("click", () => {
+    if (!backBtn.classList.contains("blocked")) {
+        if (onlineMode.classList.contains("active")) {
+            destroyBoard();
+            modeSelector.classList.remove("hidden");
+            nameTag.classList.remove("hidden");
+            setTimeout(() => backBtn.classList.add("blocked"), 1500);
+            endWaiting();
+            socket.emit("resigned");
+            socket.disconnect();
+        }
+    }
+});
+
+quit.addEventListener("click", () => {
+    if (!backBtn.classList.contains("blocked")) {
+        if (onlineMode.classList.contains("active")) {
+            onlineMode.classList.toggle("active");
+            twoPlayersMode.classList.toggle("hidden");
+            endWaiting();
+            socket.emit("resigned");
+            socket.disconnect();
+        }
+    }
 });
